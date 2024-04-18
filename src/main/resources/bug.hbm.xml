@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.project.bugtracker.pojo">
+    <class name="Bug" table="bug">
+        <id name="bugID" column="bug_id">
+            <generator class="assigned"/>
+        </id>
+        <property name="bugTitle" column="Bug Title" type="string"/>
+        <property name="bugDescription" column="Bug Description" type="string"/>
+        <property name="bugDueDate" column="Bug Due Date" type="date"/>
+        <property name="assignedTo" column="Bug Assignee" type="string"/>
+
+        <!-- New property for bugPriority -->
+        <property name="bugPriority" column="Bug Priority" type="string"/>
+
+    </class>
+</hibernate-mapping>

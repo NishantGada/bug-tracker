@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.project.bugtracker.pojo">
+    <class name="Employee" table="employee">
+        <id name="empId" column="emp_id">
+            <generator class="assigned"/>
+        </id>
+        <property name="firstName" column="First Name" type="string"/>
+        <property name="lastName" column="Last Name" type="string"/>
+        <property name="email" column="Email" type="string"/>
+        <property name="password" column="Password" type="string"/>
+        <property name="supervisorName" column="Supervisor Name" type="string"/>
+
+        <!-- Mapping for bugsList -->
+        <set name="bugsList" table="bug" inverse="true" lazy="true">
+            <key column="bug_assignee"/>
+            <one-to-many class="Bug"/>
+        </set>
+    </class>
+</hibernate-mapping>

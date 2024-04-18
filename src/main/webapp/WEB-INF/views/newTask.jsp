@@ -1,0 +1,72 @@
+<%@ page import="com.project.bugtracker.pojo.Employee" %>
+<%@ page import="java.util.List" %>
+<%@page contentType="text/html;" language="java" %>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Task</title>
+</head>
+<body>
+    <div>
+        <h4>ADD NEW TICKET</h4>
+        <span class="close">&times;</span>
+    </div>
+    <form action="/create-new-task" method="post">
+        <div>
+            <label for="task-title">Enter task title</label>
+            <input type="text" name="task-title" id="task-title">
+        </div>
+
+        <div>
+            <label for="task-priority">Choose Task Priority</label>
+            <!-- <input type="text" name="task-priority" id="task-priority" placeholder=""> -->
+            <select name="task-priority" id="task-priority">
+                <option value="high">High</option>
+                <option value="moderate">Moderate</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="task-description">Enter Task Description</label>
+            <textarea name="task-description" id="task-description" cols="30" rows="10"></textarea>
+        </div>
+
+        <div>
+            <label for="task-due-date">Enter Task Due Date</label>
+            <input type="date" name="task-due-date" id="task-due-date">
+        </div>
+
+        <%--
+        <div>
+            <label for="task-assignee">Select Assignee</label>
+            <select name="task-assignee" id="task-assignee">
+                <option value="1">Nishant</option>
+                <option value="2">Ashmita</option>
+                <option value="3">Soham</option>
+            </select>
+        </div>
+        --%>
+
+        <div>
+            <label for="task-assignee">Select Assignee</label>
+            <%
+                Object attribute = request.getAttribute("employees");
+                if (attribute instanceof List<?>) {
+                    List<Employee> employees = (List<Employee>) attribute;
+            %>
+            <select name="task-assignee" id="task-assignee">
+                <% for (Employee employee : employees) { %>
+                <option value="<%= employee.getEmpId() %>"><%= employee.getFirstName() %></option>
+                <% } %>
+            </select>
+            <%
+                }
+            %>
+        </div>
+
+        <input type="submit" value="Create">
+    </form>
+</body>
+</html>
