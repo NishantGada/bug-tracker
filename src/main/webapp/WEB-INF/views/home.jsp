@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.project.bugtracker.pojo.Bug" %>
 <%@ page import="com.project.bugtracker.pojo.Employee" %>
+<%@ page import="java.util.Objects" %>
 <%@page contentType="text/html;" language="java" %>
 <html lang="en">
 
@@ -189,7 +190,7 @@
     %>
         <a href="/new-task">Create new task</a>
         <br>
-        All Tasks:
+        All Pending Tasks:
     <%
         } else {
     %>
@@ -220,7 +221,9 @@
             </tr>
             </thead>
             <tbody>
-            <% for (Bug bug : bugs) { %>
+            <% for (Bug bug : bugs) {
+                if (!Objects.equals(bug.getBugStatus(), "DONE")) {
+            %>
             <tr>
                 <td><%= bug.getBugID() %></td>
                 <td><%= bug.getBugTitle() %></td>
@@ -248,7 +251,7 @@
                 </td>
                 <% } %>
             </tr>
-            <% } %>
+            <% }} %>
             </tbody>
         </table>
         <% } %>
@@ -288,6 +291,59 @@
         </tbody>
     </table>
     <% } %>
+</section>
+
+<section>
+    <p>Completed Tasks:</p>
+    <% List<Bug> bugsDone = (List<Bug>) request.getAttribute("doneList"); %>
+    <table class="bug-table">
+        <thead>
+        <tr>
+            <th>Bug ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Assignee</th>
+            <th>Status</th>
+            <th>Edit</th>
+            <% if (deleteAccess) { %>
+            <th>Remove</th>
+            <% } %>
+        </tr>
+        </thead>
+        <tbody>
+        <% for (Bug bug : bugsDone) { %>
+        <tr>
+            <td><%= bug.getBugID() %></td>
+            <td><%= bug.getBugTitle() %></td>
+            <td><%= bug.getBugDescription() %></td>
+            <td><%= bug.getBugPriority() %></td>
+            <td><%= bug.getBugDueDate() %></td>
+            <td><%= bug.getAssignedTo().getFirstName() %></td>
+            <td><%= bug.getBugStatus() %></td>
+            <td>
+                <form action="/edit-bug" method="post">
+                    <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                    <input type="submit" value="Edit" />
+                </form>
+            </td>
+            <% if (deleteAccess) { %>
+            <td>
+                <form
+                        action="/delete-bug"
+                        method="post"
+                        onsubmit="return confirm('Are you sure you want to delete this bug?');"
+                >
+                    <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                    <input type="submit" value="Delete" />
+                </form>
+            </td>
+            <% } %>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
 </section>
 
 <%--
