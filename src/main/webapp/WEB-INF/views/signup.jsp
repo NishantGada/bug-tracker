@@ -30,23 +30,23 @@
             }
         %>
         <div>
-            <input type="text" name="first-name" id="first-name" placeholder="Enter First Name">
-            <input type="text" name="last-name" id="last-name" placeholder="Enter Last Name">
+            <input type="text" name="first-name" id="first-name" placeholder="Enter First Name" required>
+            <input type="text" name="last-name" id="last-name" placeholder="Enter Last Name" required>
         </div>
         <div>
 <%--            <input type="text" name="role" id="role" placeholder="Enter Employee Role">--%>
             <label for="employee-role">Select Employee Role</label>
-            <select name="employee-role" id="employee-role">
+            <select name="employee-role" id="employee-role" required>
                 <option value="Developer">Developer</option>
                 <option value="Tester">Tester</option>
                 <option value="Team Lead">Team Lead</option>
             </select>
-            <input type="text" name="supervisor-name" id="supervisor-name" placeholder="Enter Supervisor's Name">
+            <input type="text" name="supervisor-name" id="supervisor-name" placeholder="Enter Supervisor's Name" required>
         </div>
         <div>
-            <input type="email" name="email" id="email" placeholder="Enter Email ID">
-            <input type="password" name="password" id="password" placeholder="Create a Password">
-            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password">
+            <input type="email" name="email" id="email" placeholder="Enter Email ID" required>
+            <input type="password" name="password" id="password" placeholder="Create a Password" required>
+            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password" required>
         </div>
         <input type="submit" value="Sign up">
     </form>

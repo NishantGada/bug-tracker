@@ -13,6 +13,7 @@ public class Bug {
     private String bugDescription;
     private String bugPriority;
     private Date bugDueDate;
+    private String bugStatus;
 
     @ManyToOne
     @JoinColumn(name = "empId")
@@ -20,12 +21,23 @@ public class Bug {
 
     public Bug() {
     }
+
+    public Bug(String bugTitle, String bugDescription, String bugPriority, Date bugDueDate, Employee assignedTo, String bugStatus) {
+        this.bugTitle = bugTitle;
+        this.bugDescription = bugDescription;
+        this.bugPriority = bugPriority;
+        this.bugDueDate = bugDueDate;
+        this.assignedTo = assignedTo;
+        this.bugStatus = bugStatus;
+    }
+
     public Bug(String bugTitle, String bugDescription, String bugPriority, Date bugDueDate, Employee assignedTo) {
         this.bugTitle = bugTitle;
         this.bugDescription = bugDescription;
         this.bugPriority = bugPriority;
         this.bugDueDate = bugDueDate;
         this.assignedTo = assignedTo;
+        this.bugStatus = "TODO";
     }
 
     public Employee getAssignedTo() {
@@ -76,6 +88,14 @@ public class Bug {
         this.bugDueDate = bugDueDate;
     }
 
+    public String getBugStatus() {
+        return bugStatus;
+    }
+
+    public void setBugStatus(String status) {
+        this.bugStatus = status;
+    }
+
     @Override
     public String toString() {
         return "Bug{" +
@@ -83,6 +103,7 @@ public class Bug {
                 ", bugTitle='" + bugTitle + '\'' +
                 ", bugDescription='" + bugDescription + '\'' +
                 ", bugDueDate=" + bugDueDate +
+                ", bugStatus=" + bugStatus +
 //                ", assignedTo=" + assignedTo +
                 '}';
     }

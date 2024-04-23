@@ -1,5 +1,6 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.project.bugtracker.pojo.Bug" %>
+<%@ page import="com.project.bugtracker.pojo.Employee" %>
 <%@page contentType="text/html;" language="java" %>
 <html lang="en">
 
@@ -134,6 +135,7 @@
         .bug-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 30px;
         }
 
         .bug-table th, .bug-table td {
@@ -193,7 +195,14 @@
     %>
         <%= request.getAttribute("firstName") %>'s Tasks:
     <% } %>
-        <% List< Bug > bugs = (List<Bug>) request.getAttribute("bugsList"); %>
+        <%
+            List< Bug > bugs = (List<Bug>) request.getAttribute("bugsList");
+            Boolean deleteAccess = (Boolean) request.getAttribute("deleteAccess");
+
+            if (bugs.size() == 0) {
+        %>
+        <p>No Pending Tasks, Yay!</p>
+        <% } else { %>
         <table class="bug-table">
             <thead>
             <tr>
@@ -203,7 +212,11 @@
                 <th>Priority</th>
                 <th>Due Date</th>
                 <th>Assignee</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <% if (deleteAccess) { %>
                 <th>Remove</th>
+                <% } %>
             </tr>
             </thead>
             <tbody>
@@ -215,16 +228,66 @@
                 <td><%= bug.getBugPriority() %></td>
                 <td><%= bug.getBugDueDate() %></td>
                 <td><%= bug.getAssignedTo().getFirstName() %></td>
+                <td><%= bug.getBugStatus() %></td>
                 <td>
-                    <form action="/delete-bug" method="post">
+                    <form action="/edit-bug" method="post">
+                        <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                        <input type="submit" value="Edit" />
+                    </form>
+                </td>
+                <% if (deleteAccess) { %>
+                <td>
+                    <form
+                            action="/delete-bug"
+                            method="post"
+                            onsubmit="return confirm('Are you sure you want to delete this bug?');"
+                    >
                         <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
                         <input type="submit" value="Delete" />
                     </form>
                 </td>
+                <% } %>
             </tr>
             <% } %>
             </tbody>
         </table>
+        <% } %>
+</section>
+
+<section>
+    <%
+        if (request.getAttribute("employeeRole").equals("Team Lead")) {
+    %>
+    <br>
+    Employee List:
+    <% List<Employee> employees = (List<Employee>) request.getAttribute("employeeList");%>
+    <table class="bug-table">
+        <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Role</th>
+            <th>Supervisor</th>
+        </tr>
+        </thead>
+        <tbody>
+            <% for (Employee employee : employees) { %>
+            <tr>
+                <td><%= employee.getEmpId() %></td>
+                <td><%= employee.getFirstName() %></td>
+                <td><%= employee.getLastName() %></td>
+                <td><%= employee.getEmail() %></td>
+                <td><%= employee.getPassword() %></td>
+                <td><%= employee.getEmployeeRole() %></td>
+                <td><%= employee.getSupervisorName() %></td>
+            </tr>
+            <%}%>
+        </tbody>
+    </table>
+    <% } %>
 </section>
 
 <%--

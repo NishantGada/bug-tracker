@@ -89,8 +89,8 @@
             }
         %>
         <div>
-            <input type="email" name="email" id="email" placeholder="Enter Email ID">
-            <input type="password" name="password" id="password" placeholder="Enter Password">
+            <input type="email" name="email" id="email" placeholder="Enter Email ID" required>
+            <input type="password" name="password" id="password" placeholder="Enter Password" required>
         </div>
         <input type="submit" value="Login">
     </form>

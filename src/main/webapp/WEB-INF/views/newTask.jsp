@@ -10,7 +10,6 @@
 <body>
     <div>
         <h4>ADD NEW TICKET</h4>
-        <span class="close">&times;</span>
     </div>
     <form action="/create-new-task" method="post">
         <div>

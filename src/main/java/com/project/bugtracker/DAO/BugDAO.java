@@ -3,10 +3,12 @@ package com.project.bugtracker.DAO;
 import com.project.bugtracker.pojo.Bug;
 import com.project.bugtracker.pojo.Employee;
 import jakarta.persistence.Query;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -67,6 +69,52 @@ public class BugDAO {
         }
         return null;
     }
+
+    public Bug getBugById(int id) {
+        try (Session session = DAO.getSessionFactory().openSession()) {
+            return session.get(Bug.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void updateBug(Bug bug) {
+        System.out.println("BugDAO updateBug called...");
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = DAO.getSessionFactory().openSession();
+            // String hql = "UPDATE Bug SET title = 'New Title', description = 'New Description' WHERE id = 1";
+            // Query query = session.createQuery(hql);
+
+            transaction = session.beginTransaction();
+            session.update(bug);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public List<Bug> getBugsInReview() {
+        try (Session session = DAO.getSessionFactory().openSession()) {
+            String hql = "FROM Bug WHERE bugStatus = :status";
+            Query query = session.createQuery(hql, Bug.class);
+            query.setParameter("status", "In Review");
+            return query.getResultList();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
 
     public void deleteBug(int bugId) {
         Session session = DAO.getSessionFactory().openSession();
