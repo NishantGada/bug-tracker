@@ -103,11 +103,11 @@ public class BugDAO {
         }
     }
 
-    public List<Bug> getBugsInReview() {
+    public List<Bug> getBugsByStatus(String status) {
         try (Session session = DAO.getSessionFactory().openSession()) {
             String hql = "FROM Bug WHERE bugStatus = :status";
             Query query = session.createQuery(hql, Bug.class);
-            query.setParameter("status", "In Review");
+            query.setParameter("status", status);
             return query.getResultList();
         } catch (HibernateException e) {
             e.printStackTrace();
