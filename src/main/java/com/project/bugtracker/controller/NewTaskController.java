@@ -81,26 +81,31 @@ public class NewTaskController {
             BugDAO bugDAO,
             EmployeeDAO employeeDAO
     ) {
-        System.out.println("Saving Changes.. ");
+        try {
+            System.out.println("Saving Changes.. ");
 
-        System.out.println("editBugTitle: " + editBugTitle);
-        System.out.println("editBugId: " + editBugId);
-        System.out.println("editBugPriority: " + editBugPriority);
-        System.out.println("editBugDescription: " + editBugDescription);
-        // bugDAO.getBugById(Integer.parseInt(editBugId)).getBugDueDate()
-        System.out.println("editBugDueDate: " + editBugDueDate);
-        System.out.println("editBugStatus: " + editBugStatus);
-        System.out.println("editAssigneeId: " + editAssigneeId);
+            System.out.println("editBugTitle: " + editBugTitle);
+            System.out.println("editBugId: " + editBugId);
+            System.out.println("editBugPriority: " + editBugPriority);
+            System.out.println("editBugDescription: " + editBugDescription);
+            // bugDAO.getBugById(Integer.parseInt(editBugId)).getBugDueDate()
+            System.out.println("editBugDueDate: " + editBugDueDate);
+            System.out.println("editBugStatus: " + editBugStatus);
+            System.out.println("editAssigneeId: " + editAssigneeId);
 
-        Employee bugAssignee = employeeDAO.getEmployeeById(Integer.parseInt(editAssigneeId));
-        System.out.println("bugAssignee: " + bugAssignee);
+            Employee bugAssignee = employeeDAO.getEmployeeById(Integer.parseInt(editAssigneeId));
+            System.out.println("bugAssignee: " + bugAssignee);
 
-        Bug bug = new Bug(editBugTitle, editBugDescription, editBugPriority, editBugDueDate, bugAssignee, editBugStatus);
-        bug.setBugID(Integer.parseInt(editBugId));
-        System.out.println("Edit Bug: " + bug);
+            Bug bug = new Bug(editBugTitle, editBugDescription, editBugPriority, editBugDueDate, bugAssignee, editBugStatus);
+            bug.setBugID(Integer.parseInt(editBugId));
+            System.out.println("Edit Bug: " + bug);
 
-        bugDAO.updateBug(bug);
-        return "redirect:/home";
+            bugDAO.updateBug(bug);
+            return "redirect:/home";
+        } catch (Exception e) {
+            System.out.println("Exception e: " + e);
+            return "redirect:/edit";
+        }
     }
 
     @PostMapping("delete-bug")
@@ -298,9 +303,10 @@ public class NewTaskController {
                 modelAndView.addObject("bugsList", bugDAO.getAllBugs());
                 modelAndView.addObject("employeeList", employeeDAO.getAllEmployees());
                 modelAndView.addObject("deleteAccess", true);
+                modelAndView.addObject("doneList", bugDAO.getBugsByStatus("Done"));
             } else if ((loggedInEmployee.getEmployeeRole().equals("Tester"))) {
                 // System.out.println("bugs in review: " + bugDAO.getBugsInReview());
-                modelAndView.addObject("bugsList", bugDAO.getBugsInReview());
+                modelAndView.addObject("bugsList", bugDAO.getBugsByStatus("In Review"));
                 modelAndView.addObject("deleteAccess", true);
             } else {
                 modelAndView.addObject("bugsList", bugDAO.getBugsByEmployeeId(loggedInEmployeeId));
