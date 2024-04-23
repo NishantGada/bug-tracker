@@ -18,12 +18,8 @@
         int id = (Integer) request.getAttribute("editBugId");
         String role = (String) request.getAttribute("role");
         boolean disabled;
-        if (role.equals("Team Lead")) {
-            disabled = false;
-        } else {
-            disabled = true;
-        }
-        System.out.println("Edit Page: role & disabled = " + role + disabled);
+        disabled = !role.equals("Team Lead");
+        System.out.println("Edit Page: role & disabled = " + role + " & " + disabled);
     %>
     <p>Edit ID: <%= id %></p>
     <form action="/save-changes" method="post">
@@ -67,27 +63,46 @@
 
         <div>
             <label for="edit-task-due-date">Enter Task Due Date</label>
+            <% if (disabled) { %>
+            <input
+                    type="date"
+                    name="task-due-date"
+                    id="edit-task-due-date"
+                    value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(bug.getBugDueDate()) %>"
+                    min="<%= java.time.LocalDate.now().toString() %>"
+                    disabled
+                    required
+            >
+            <input
+                    type="hidden"
+                    name="edit-task-due-date"
+                    id="edit-task-due-date"
+                    value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(bug.getBugDueDate()) %>"
+                    min="<%= java.time.LocalDate.now().toString() %>"
+                    required
+            >
+            <% } else { %>
             <input
                     type="date"
                     name="edit-task-due-date"
                     id="edit-task-due-date"
                     value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(bug.getBugDueDate()) %>"
-                    min="<%= java.time.LocalDate.now().toString() %>"
-                    disabled="<%= !editAccess %>"
                     required
             >
+            <% } %>
         </div>
 
-
+        <% String currentStatus = bug.getBugStatus(); %>
         <div>
             <label for="task-status">Select Status for bug:</label>
             <select id="task-status" name="edit-task-status" required>
-                <option value="TODO">TODO</option>
-                <option value="In Progress">In Progress</option>
-                <option value="In Review">In Review</option>
-                <option value="DONE">DONE</option>
+                <option value="TODO" <%= currentStatus.equals("TODO") ? "selected" : "" %>>TODO</option>
+                <option value="In Progress" <%= currentStatus.equals("In Progress") ? "selected" : "" %>>In Progress</option>
+                <option value="In Review" <%= currentStatus.equals("In Review") ? "selected" : "" %>>In Review</option>
+                <option value="DONE" <%= currentStatus.equals("DONE") ? "selected" : "" %>>DONE</option>
             </select>
         </div>
+
 
         <div>
             <label for="edit-task-assignee">Select Assignee</label>
