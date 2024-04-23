@@ -293,6 +293,7 @@
     <% } %>
 </section>
 
+<% if (request.getAttribute("employeeRole").equals("Team Lead")) { %>
 <section>
     <p>Completed Tasks:</p>
     <% List<Bug> bugsDone = (List<Bug>) request.getAttribute("doneList"); %>
@@ -345,6 +346,7 @@
         </tbody>
     </table>
 </section>
+<% } %>
 
 <%--
 <div id="myModal" class="modal">
