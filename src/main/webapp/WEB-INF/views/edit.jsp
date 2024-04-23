@@ -69,7 +69,6 @@
                     name="task-due-date"
                     id="edit-task-due-date"
                     value="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(bug.getBugDueDate()) %>"
-                    min="<%= java.time.LocalDate.now().toString() %>"
                     disabled
                     required
             >
