@@ -101,21 +101,6 @@ public class EmployeeDAO {
         return null;
     }
 
-    /*
-    public Employee getEmployeeById(String id) {
-        try (Session session = DAO.getSessionFactory().openSession()) {
-            int employeeId = Integer.parseInt(id);
-            return session.get(Employee.class, employeeId);
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid employee ID format: " + id);
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-     */
-
     public Employee getEmployeeById(int id) {
         try (Session session = DAO.getSessionFactory().openSession()) {
             return session.get(Employee.class, id);
@@ -124,7 +109,6 @@ public class EmployeeDAO {
             return null;
         }
     }
-
 
     public List<String> getAllEmployeeNames() {
         try (Session session = DAO.getSessionFactory().openSession()) {
@@ -170,4 +154,25 @@ public class EmployeeDAO {
         return Collections.emptyList();
     }
 
+    public void deleteEmployee(int empId) {
+        System.out.println("deleteEmployee empId: " + empId);
+        Session session = DAO.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            Employee employee = session.get(Employee.class, empId);
+            System.out.println("deleteEmployee delete emp: " + employee);
+            if (employee != null) {
+                session.delete(employee);
+                transaction.commit();
+            }
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 }
