@@ -1,5 +1,6 @@
 package com.project.bugtracker.DAO;
 
+import com.project.bugtracker.pojo.Bug;
 import com.project.bugtracker.pojo.Employee;
 import jakarta.persistence.Query;
 import org.hibernate.Session;
@@ -134,4 +135,39 @@ public class EmployeeDAO {
             return Collections.emptyList();
         }
     }
+
+    public void updateEmployee(Employee employee) {
+        System.out.println("BugDAO updateBug called...");
+        Session session = null;
+        Transaction transaction = null;
+        try {
+            session = DAO.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+             session.update(employee);
+            System.out.println("updateEmployee employee: " + employee);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    public List<Bug> getEmployeeBugs(int employeeId) {
+        try (Session session = DAO.getSessionFactory().openSession()) {
+            Employee employee = session.get(Employee.class, employeeId);
+            if (employee != null) {
+                return employee.getBugsList();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+
 }
