@@ -183,27 +183,189 @@
     <p>Role: <%= request.getAttribute("employeeRole") %></p>
     <p>Supervisor: <%= request.getAttribute("supervisorName") %></p>
 </header>
+<%
+    List<Bug> bugs = (List<Bug>) request.getAttribute("bugsList");
+    Boolean deleteAccess = (Boolean) request.getAttribute("deleteAccess");
+    if (bugs.isEmpty()) {
+%>
+    <p>No Pending Tasks, Yay!</p>
+<% } else { %>
+<% if (request.getAttribute("employeeRole").equals("Developer")) { %>
+    <%= request.getAttribute("firstName") %>'s Tasks:
+    <section>
+        <table class="bug-table">
+                <thead>
+                <tr>
+                    <th>Bug ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Priority</th>
+                    <th>Due Date</th>
+                    <th>Assignee</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <% if (deleteAccess) { %>
+                    <th>Remove</th>
+                    <% } %>
+                </tr>
+                </thead>
+                <tbody>
+                <% for (Bug bug : bugs) {
+                    // if (!Objects.equals(bug.getBugStatus(), "DONE")) {
+                %>
+                <tr>
+                    <td><%= bug.getBugID() %></td>
+                    <td><%= bug.getBugTitle() %></td>
+                    <td><%= bug.getBugDescription() %></td>
+                    <td><%= bug.getBugPriority() %></td>
+                    <td><%= bug.getBugDueDate() %></td>
+                    <td><%= bug.getAssignedTo().getFirstName() %></td>
+                    <td><%= bug.getBugStatus() %></td>
+                    <td>
+                        <form action="/edit-bug" method="post">
+                            <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                            <input type="submit" value="Edit" />
+                        </form>
+                    </td>
+                    <% if (deleteAccess) { %>
+                    <td>
+                        <form
+                                action="/delete-bug"
+                                method="post"
+                                onsubmit="return confirm('Are you sure you want to delete this bug?');"
+                        >
+                            <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                            <input type="submit" value="Delete" />
+                        </form>
+                    </td>
+                    <% } %>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+    </section>
+<% }} %>
 
-<section>
-    <%
-        if (request.getAttribute("employeeRole").equals("Team Lead")) {
-    %>
-        <a href="/new-task">Create new task</a>
-        <br>
-        All Pending Tasks:
-    <%
-        } else {
-    %>
-        <%= request.getAttribute("firstName") %>'s Tasks:
-    <% } %>
-        <%
-            List< Bug > bugs = (List<Bug>) request.getAttribute("bugsList");
-            Boolean deleteAccess = (Boolean) request.getAttribute("deleteAccess");
+<%
+    if (request.getAttribute("employeeRole").equals("Tester")) {
+        List< Bug > reviewList = (List<Bug>) request.getAttribute("reviewList");
+%>
+    <%= request.getAttribute("firstName") %>'s Tasks:
+    <section>
+        <table class="bug-table">
+            <thead>
+            <tr>
+                <th>Bug ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Due Date</th>
+                <th>Assignee</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <% if (deleteAccess) { %>
+                <th>Remove</th>
+                <% } %>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (Bug bug : bugs) {
+                if (!Objects.equals(bug.getBugStatus(), "DONE") && !Objects.equals(bug.getBugStatus(), "In Review")) {
+            %>
+            <tr>
+                <td><%= bug.getBugID() %></td>
+                <td><%= bug.getBugTitle() %></td>
+                <td><%= bug.getBugDescription() %></td>
+                <td><%= bug.getBugPriority() %></td>
+                <td><%= bug.getBugDueDate() %></td>
+                <td><%= bug.getAssignedTo().getFirstName() %></td>
+                <td><%= bug.getBugStatus() %></td>
+                <td>
+                    <form action="/edit-bug" method="post">
+                        <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                        <input type="submit" value="Edit" />
+                    </form>
+                </td>
+                <% if (deleteAccess) { %>
+                <td>
+                    <form
+                            action="/delete-bug"
+                            method="post"
+                            onsubmit="return confirm('Are you sure you want to delete this bug?');"
+                    >
+                        <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                        <input type="submit" value="Delete" />
+                    </form>
+                </td>
+                <% } %>
+            </tr>
+            <% }} %>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <p>To be reviewed: </p>
+        <table class="bug-table">
+            <thead>
+            <tr>
+                <th>Bug ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Due Date</th>
+                <th>Assignee</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <% if (deleteAccess) { %>
+                <th>Remove</th>
+                <% } %>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (Bug bug : reviewList) {
+                if (Objects.equals(bug.getBugStatus(), "In Review")) {
+            %>
+            <tr>
+                <td><%= bug.getBugID() %></td>
+                <td><%= bug.getBugTitle() %></td>
+                <td><%= bug.getBugDescription() %></td>
+                <td><%= bug.getBugPriority() %></td>
+                <td><%= bug.getBugDueDate() %></td>
+                <td><%= bug.getAssignedTo().getFirstName() %></td>
+                <td><%= bug.getBugStatus() %></td>
+                <td>
+                    <form action="/edit-bug" method="post">
+                        <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                        <input type="submit" value="Edit" />
+                    </form>
+                </td>
+                <% if (deleteAccess) { %>
+                <td>
+                    <form
+                            action="/delete-bug"
+                            method="post"
+                            onsubmit="return confirm('Are you sure you want to delete this bug?');"
+                    >
+                        <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                        <input type="submit" value="Delete" />
+                    </form>
+                </td>
+                <% } %>
+            </tr>
+            <% }} %>
+            </tbody>
+        </table>
+    </section>
+<% } %>
 
-            if (bugs.size() == 0) {
-        %>
-        <p>No Pending Tasks, Yay!</p>
-        <% } else { %>
+
+<%
+    if (request.getAttribute("employeeRole").equals("Team Lead")) {
+%>
+    <a href="/new-task">Create new task</a>
+    <br>
+    All Pending Tasks:
+    <section>
         <table class="bug-table">
             <thead>
             <tr>
@@ -254,248 +416,111 @@
             <% }} %>
             </tbody>
         </table>
-        <% } %>
-</section>
-
-<section>
-    <%
-        if (request.getAttribute("employeeRole").equals("Team Lead")) {
-    %>
-    <br>
-    Employee List:
-    <% List<Employee> employees = (List<Employee>) request.getAttribute("employeeList");%>
-    <table class="bug-table">
-        <thead>
-        <tr>
-            <th>Employee ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Role</th>
-            <th>Supervisor</th>
-        </tr>
-        </thead>
-        <tbody>
-            <% for (Employee employee : employees) { %>
+    </section>
+    <section>
+        <br>
+        Employee List:
+        <% List<Employee> employees = (List<Employee>) request.getAttribute("employeeList");%>
+        <table class="bug-table">
+            <thead>
             <tr>
-                <td><%= employee.getEmpId() %></td>
-                <td><%= employee.getFirstName() %></td>
-                <td><%= employee.getLastName() %></td>
-                <td><%= employee.getEmail() %></td>
-                <td><%= employee.getPassword() %></td>
-                <td><%= employee.getEmployeeRole() %></td>
-                <td><%= employee.getSupervisorName() %></td>
+                <th>Employee ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Role</th>
+                <th>Supervisor</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
-            <%}%>
-        </tbody>
-    </table>
-    <% } %>
-</section>
-
-<% if (request.getAttribute("employeeRole").equals("Team Lead")) { %>
-<section>
-    <p>Completed Tasks:</p>
-    <% List<Bug> bugsDone = (List<Bug>) request.getAttribute("doneList"); %>
-    <table class="bug-table">
-        <thead>
-        <tr>
-            <th>Bug ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Priority</th>
-            <th>Due Date</th>
-            <th>Assignee</th>
-            <th>Status</th>
-            <th>Edit</th>
-            <% if (deleteAccess) { %>
-            <th>Remove</th>
+            </thead>
+            <tbody>
+                <% for (Employee employee : employees) { %>
+                <tr>
+                    <td><%= employee.getEmpId() %></td>
+                    <td><%= employee.getFirstName() %></td>
+                    <td><%= employee.getLastName() %></td>
+                    <td><%= employee.getEmail() %></td>
+                    <td><%= employee.getPassword() %></td>
+                    <td><%= employee.getEmployeeRole() %></td>
+                    <td><%= employee.getSupervisorName() %></td>
+                    <td>
+                        <form action="/edit-employee-details" method="post">
+                            <input type="hidden" name="empId" value="<%= employee.getEmpId() %>" />
+                            <input type="submit" value="Edit" />
+                        </form>
+                    </td>
+                    <% if (deleteAccess) { %>
+                    <td>
+                        <form
+                                action="/delete-employee"
+                                method="post"
+                                onsubmit="return confirm('Are you sure you want to delete this employee?');"
+                        >
+                            <input type="hidden" name="empId" value="<%= employee.getEmpId() %>" />
+                            <input type="submit" value="Delete" />
+                        </form>
+                    </td>
+                    <% } %>
+                </tr>
+                <%}%>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <p>Completed Tasks:</p>
+        <% List<Bug> bugsDone = (List<Bug>) request.getAttribute("doneList"); %>
+        <table class="bug-table">
+            <thead>
+            <tr>
+                <th>Bug ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Due Date</th>
+                <th>Assignee</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <% if (deleteAccess) { %>
+                <th>Remove</th>
+                <% } %>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (Bug bug : bugsDone) { %>
+            <tr>
+                <td><%= bug.getBugID() %></td>
+                <td><%= bug.getBugTitle() %></td>
+                <td><%= bug.getBugDescription() %></td>
+                <td><%= bug.getBugPriority() %></td>
+                <td><%= bug.getBugDueDate() %></td>
+                <td><%= bug.getAssignedTo().getFirstName() %></td>
+                <td><%= bug.getBugStatus() %></td>
+                <td>
+                    <form action="/edit-bug" method="post">
+                        <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                        <input type="submit" value="Edit" />
+                    </form>
+                </td>
+                <% if (deleteAccess) { %>
+                <td>
+                    <form
+                            action="/delete-bug"
+                            method="post"
+                            onsubmit="return confirm('Are you sure you want to delete this bug?');"
+                    >
+                        <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
+                        <input type="submit" value="Delete" />
+                    </form>
+                </td>
+                <% } %>
+            </tr>
             <% } %>
-        </tr>
-        </thead>
-        <tbody>
-        <% for (Bug bug : bugsDone) { %>
-        <tr>
-            <td><%= bug.getBugID() %></td>
-            <td><%= bug.getBugTitle() %></td>
-            <td><%= bug.getBugDescription() %></td>
-            <td><%= bug.getBugPriority() %></td>
-            <td><%= bug.getBugDueDate() %></td>
-            <td><%= bug.getAssignedTo().getFirstName() %></td>
-            <td><%= bug.getBugStatus() %></td>
-            <td>
-                <form action="/edit-bug" method="post">
-                    <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
-                    <input type="submit" value="Edit" />
-                </form>
-            </td>
-            <% if (deleteAccess) { %>
-            <td>
-                <form
-                        action="/delete-bug"
-                        method="post"
-                        onsubmit="return confirm('Are you sure you want to delete this bug?');"
-                >
-                    <input type="hidden" name="bugId" value="<%= bug.getBugID() %>" />
-                    <input type="submit" value="Delete" />
-                </form>
-            </td>
-            <% } %>
-        </tr>
-        <% } %>
-        </tbody>
-    </table>
-</section>
+            </tbody>
+        </table>
+    </section>
 <% } %>
 
-<%--
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <div>
-            <h4>ADD NEW TICKET</h4>
-            <span class="close">&times;</span>
-        </div>
-        <form>
-            <div>
-                <label for="task-title">Enter task title</label>
-                <input type="text" name="task-title" id="task-title">
-            </div>
-
-            <div>
-                <label for="task-priority">Choose Task Priority</label>
-                <!-- <input type="text" name="task-priority" id="task-priority" placeholder=""> -->
-                <select name="task-priority" id="task-priority">
-                    <option value="high">High</option>
-                    <option value="moderate">Moderate</option>
-                    <option value="low">Low</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="task-description">Enter Task Description</label>
-                <textarea name="task-description" id="task-description" cols="30" rows="10"></textarea>
-            </div>
-
-            <div>
-                <label for="task-assignee">Select Assignee</label>
-                <select name="task-assignee" id="task-assignee">
-                    <option value="1">Nishant</option>
-                    <option value="2">Ashmita</option>
-                    <option value="3">Soham</option>
-                </select>
-            </div>
-
-            <input type="submit" value="Create">
-        </form>
-    </div>
-</div>
-
-<div id="editModal" class="editModal">
-    <div class="modal-content">
-        <div>
-            <h4>EDIT TICKET</h4>
-            <span class="close">&times;</span>
-        </div>
-        <form>
-            <div>
-                <label for="task-title">Modify task title</label>
-                <input type="text" name="edit-task-title" id="edit-task-title">
-            </div>
-
-            <div>
-                <label for="task-priority">Choose Task Priority</label>
-                <!-- <input type="text" name="task-priority" id="task-priority" placeholder=""> -->
-                <select name="edit-task-priority" id="edit-task-priority">
-                    <option value="high">High</option>
-                    <option value="moderate">Moderate</option>
-                    <option value="low">Low</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="task-description">Enter Task Description</label>
-                <textarea name="edit-task-description" id="edit-task-description" cols="30" rows="10"></textarea>
-            </div>
-
-            <div>
-                <label for="task-assignee">Select Assignee</label>
-                <select name="edit-task-assignee" id="edit-task-assignee">
-                    <option value="Nishant">Nishant</option>
-                    <option value="Ashmita">Ashmita</option>
-                    <option value="Soham">Soham</option>
-                </select>
-            </div>
-
-            <input type="submit" value="Save Changes">
-        </form>
-    </div>
-</div>
-
-<section class="action">
-    <form action="">
-        <input type="text" name="search-bug" name="search-bug" id="search-bug" placeholder="Search...">
-        <input type="submit" value="Search">
-    </form>
-
-    <button id="create-task">Create Task</button>
-</section>
-
-<section class="bug-tracker-container">
-    <div class="bug-tracker-sub-container todo">
-        <h3 class="heading">TODO <span>4</span> </h3>
-        <div class="list-item">
-            <div>
-                <p class="list-item-title">Lorem ipsum dolor sit amet 1.</p>
-                <p class="list-item-desc">Lorem ipsum dolor, sit amet consectetur adipisicing elit 1...</p>
-            </div>
-            <div>
-                <p class="list-item-assignee">Nishant</p>
-                <p class="list-item-due">3 days</p>
-            </div>
-        </div>
-        <div class="list-item">
-            <div>
-                <p class="list-item-title">Lorem ipsum dolor sit amet 2.</p>
-                <p class="list-item-desc">Lorem ipsum dolor, sit amet consectetur adipisicing elit 2...</p>
-            </div>
-            <div>
-                <p class="list-item-assignee">Ashmita</p>
-                <p class="list-item-due">5 days</p>
-            </div>
-        </div>
-        <div class="list-item">
-            <div>
-                <p class="list-item-title">Lorem ipsum dolor sit amet 3.</p>
-                <p class="list-item-desc">Lorem ipsum dolor, sit amet consectetur adipisicing elit 3...</p>
-            </div>
-            <div>
-                <p class="list-item-assignee">Soham</p>
-                <p class="list-item-due">11 days</p>
-            </div>
-        </div>
-        <!-- <div class="list-item"></div> -->
-        <!-- <div class="list-item"></div> -->
-    </div>
-    <div class="bug-tracker-sub-container in-progress">
-        <h3 class="heading">IN PROGRESS <span>4</span> </h3>
-        <div class="list-item"></div>
-        <div class="list-item"></div>
-        <div class="list-item"></div>
-    </div>
-    <div class="bug-tracker-sub-container in-review">
-        <h3 class="heading">IN REVIEW <span>4</span> </h3>
-        <div class="list-item"></div>
-        <div class="list-item"></div>
-        <div class="list-item"></div>
-    </div>
-    <div class="bug-tracker-sub-container completed">
-        <h3 class="heading">COMPLETED <span>4</span> </h3>
-        <div class="list-item"></div>
-        <div class="list-item"></div>
-        <div class="list-item"></div>
-    </div>
-</section>
---%>
 </body>
-
 </html>
