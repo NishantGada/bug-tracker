@@ -56,11 +56,18 @@ public class EmployeeController {
             modelAndView.setViewName("redirect:/home");
         } else {
             message = "Passwords do not match!";
-            model.addAttribute("message", message);
-            model.addAttribute("error", true);
+            modelAndView.addObject("message", message);
+            modelAndView.addObject("error", true);
             modelAndView.setViewName("redirect:/edit-employee");
         }
 
         return modelAndView;
+    }
+
+    @PostMapping("/delete-employee")
+    public String deleteEmployee(@RequestParam("empId") int empId, EmployeeDAO employeeDAO) {
+        System.out.println("Emp ID to be deleted: " + empId);
+        employeeDAO.deleteEmployee(empId);
+        return "redirect:/home";
     }
 }
