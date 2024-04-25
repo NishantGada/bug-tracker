@@ -48,9 +48,7 @@ public class AuthController {
                         employeeCount, firstName, lastName, email, password, employeeRole, supervisorName
                 );
                 createNewEmployee(employee, employeeDAO);
-                message = "Successful Sign up!";
                 modelAndView.addObject("invalid", false);
-                // modelAndView.addObject("message", message);
                 modelAndView.setViewName("login");
             } else {
                 System.out.println("Employee already in DB!");

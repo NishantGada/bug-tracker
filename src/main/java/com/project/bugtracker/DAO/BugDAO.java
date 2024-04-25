@@ -85,9 +85,6 @@ public class BugDAO {
         Transaction transaction = null;
         try {
             session = DAO.getSessionFactory().openSession();
-            // String hql = "UPDATE Bug SET title = 'New Title', description = 'New Description' WHERE id = 1";
-            // Query query = session.createQuery(hql);
-
             transaction = session.beginTransaction();
             session.update(bug);
             transaction.commit();
@@ -114,7 +111,6 @@ public class BugDAO {
             return Collections.emptyList();
         }
     }
-
 
     public void deleteBug(int bugId) {
         Session session = DAO.getSessionFactory().openSession();

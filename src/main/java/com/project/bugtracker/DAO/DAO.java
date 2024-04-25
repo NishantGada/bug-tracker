@@ -44,7 +44,6 @@ public class DAO {
                 StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                         .applySetting(Environment.DRIVER, "com.mysql.cj.jdbc.Driver")
                         .applySetting(Environment.URL, "jdbc:mysql://localhost:3306/semester2")
-                        //modify the db to the real db after test!
                         .applySetting(Environment.USER, "root")
                         .applySetting(Environment.PASS, "Alphagamma@9999")
                         .applySetting(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect")
@@ -60,7 +59,6 @@ public class DAO {
 
                 sessionFactory = metadata.getSessionFactoryBuilder().build();
                 System.out.println("DAO sessionFactory: " + sessionFactory);
-                // sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
             } catch (Exception e) {
                 e.printStackTrace();
             }
