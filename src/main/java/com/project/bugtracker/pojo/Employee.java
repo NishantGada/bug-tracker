@@ -29,6 +29,17 @@ public class Employee {
     public Employee() {
     }
 
+    public Employee(int id, String firstName, String lastName, String email, String password, String employeeRole, String supervisorName, List bugsList) {
+        this.empId = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.employeeRole = employeeRole;
+        this.supervisorName = supervisorName;
+        this.bugsList = bugsList;
+    }
+
     public Employee(int count, String firstName, String lastName, String email, String password, String employeeRole, String supervisorName) {
         this.empId = count + 1;
         this.firstName = firstName;
