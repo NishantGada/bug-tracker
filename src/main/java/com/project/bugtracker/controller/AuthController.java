@@ -16,7 +16,7 @@ public class AuthController {
     public ModelAndView showSignupPage(Model model) {
         System.out.println("inside showSignupPage");
         ModelAndView modelAndView = new ModelAndView();
-        model.addAttribute("error", false);
+        modelAndView.addObject("error", false);
         modelAndView.setViewName("signup");
         return modelAndView;
     }
@@ -49,20 +49,20 @@ public class AuthController {
                 );
                 createNewEmployee(employee, employeeDAO);
                 message = "Successful Sign up!";
-                model.addAttribute("invalid", false);
-                // model.addAttribute("message", message);
+                modelAndView.addObject("invalid", false);
+                // modelAndView.addObject("message", message);
                 modelAndView.setViewName("login");
             } else {
                 System.out.println("Employee already in DB!");
                 message = "Employee already in DB!";
                 modelAndView.setViewName("redirect:/sign-up");
-                model.addAttribute("message", message);
-                model.addAttribute("error", true);
+                modelAndView.addObject("message", message);
+                modelAndView.addObject("error", true);
             }
         } else {
             message = "Passwords do not match!";
-            model.addAttribute("message", message);
-            model.addAttribute("error", true);
+            modelAndView.addObject("message", message);
+            modelAndView.addObject("error", true);
             modelAndView.setViewName("redirect:/sign-up");
         }
 
@@ -73,7 +73,7 @@ public class AuthController {
     public ModelAndView showLoginPage(Model model) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
-        model.addAttribute("invalid", false);
+        modelAndView.addObject("invalid", false);
         return modelAndView;
     }
 
@@ -94,8 +94,8 @@ public class AuthController {
             modelAndView.setViewName("redirect:/home");
         } else {
             message = "Invalid Credentials! Please re-check your information";
-            model.addAttribute("invalid", true);
-            model.addAttribute("message", message);
+            modelAndView.addObject("invalid", true);
+            modelAndView.addObject("message", message);
             modelAndView.setViewName("login");
         }
 

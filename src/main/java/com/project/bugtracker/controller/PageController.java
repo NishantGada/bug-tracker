@@ -44,8 +44,8 @@ public class PageController {
             System.out.println("logged in employee id: " + loggedInEmployeeId);
 
             modelAndView.setViewName("home");
-            model.addAttribute("invalid", false);
-            model.addAttribute("loginSuccessful", true);
+            modelAndView.addObject("invalid", false);
+            modelAndView.addObject("loginSuccessful", true);
 
             modelAndView.addObject("firstName", loggedInEmployee.getFirstName());
             modelAndView.addObject("lastName", loggedInEmployee.getLastName());
@@ -70,8 +70,8 @@ public class PageController {
             }
         } else {
             System.out.println("loggedInEmployee is NULL... ");
-            model.addAttribute("invalid", true);
-            model.addAttribute("message", "Please Login!");
+            modelAndView.addObject("invalid", true);
+            modelAndView.addObject("message", "Please Login!");
             modelAndView.setViewName("login");
         }
 
@@ -86,12 +86,12 @@ public class PageController {
         if (loggedInEmployee != null) {
             modelAndView.setViewName("edit");
             modelAndView.addObject("editBugId", session.getAttribute("editBugId"));
-            model.addAttribute("employees", employeeDAO.getAllEmployees());
-            model.addAttribute("role", loggedInEmployee.getEmployeeRole());
+            modelAndView.addObject("employees", employeeDAO.getAllEmployees());
+            modelAndView.addObject("role", loggedInEmployee.getEmployeeRole());
         } else {
             System.out.println("loggedInEmployee is NULL... ");
-            model.addAttribute("invalid", true);
-            model.addAttribute("message", "Please Login!");
+            modelAndView.addObject("invalid", true);
+            modelAndView.addObject("message", "Please Login!");
             modelAndView.setViewName("login");
         }
 
@@ -106,13 +106,11 @@ public class PageController {
         if (loggedInEmployee != null) {
             modelAndView.setViewName("editEmployee");
             modelAndView.addObject("editEmpId", session.getAttribute("editEmpId"));
-            model.addAttribute("error", false);
-            // model.addAttribute("employees", employeeDAO.getAllEmployees());
-            // model.addAttribute("role", loggedInEmployee.getEmployeeRole());
+            modelAndView.addObject("error", false);
         } else {
             System.out.println("loggedInEmployee is NULL... ");
-            model.addAttribute("invalid", true);
-            model.addAttribute("message", "Please Login!");
+            modelAndView.addObject("invalid", true);
+            modelAndView.addObject("message", "Please Login!");
             modelAndView.setViewName("login");
         }
 
