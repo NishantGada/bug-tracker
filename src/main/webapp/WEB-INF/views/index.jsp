@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>JIRAFFE</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 </head>
 <body>
     <h2>JIRAFFE</h2>
